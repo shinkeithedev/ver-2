@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Page 1 - Welcome</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root{ --accent:#ff5ca8; --card-bg: rgba(255,255,255,0.98); --muted:#666; }
+      html,body{ height:100%; margin:0; }
+      body{ display:flex; align-items:center; justify-content:center; font-family: Inter, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color:#222;
+        background: linear-gradient(135deg,#764ba2 0%,#667eea 100%);
+      }
+
+      .stage{ width:100%; max-width:980px; padding:2.2rem; box-sizing:border-box; display:flex; align-items:center; justify-content:center; }
+      .card{ background:var(--card-bg); color:#222; padding:1.6rem 2.0rem; border-radius:14px; box-shadow:0 14px 38px rgba(0,0,0,0.12); text-align:center; width:100%; max-width:680px; position:relative; overflow:visible; }
+      .title{ font-family: 'Dancing Script', cursive; font-size: clamp(30px, 4.6vw, 48px); margin:0; color:#3a2a69; transform-origin:center; animation: entrance 760ms cubic-bezier(.2,.9,.2,1); }
+      .subtitle{ color:var(--muted); margin:0.55rem 0 1rem; font-size:clamp(15px, 2.4vw, 18px); }
+      .controls{ display:flex; gap:0.8rem; justify-content:center; margin-top:0.9rem; }
+      a.btn{ background:var(--accent); color: #fff; padding:0.66rem 1rem; border-radius:10px; font-weight:700; text-decoration:none; box-shadow:0 12px 30px rgba(0,0,0,0.12); transition: transform 180ms ease, box-shadow 180ms ease; display:inline-block; }
+      a.btn.secondary{ background:#9aa0a6; }
+      a.btn:focus{ outline: 3px solid rgba(255,255,255,0.12); }
+      a.btn:hover{ transform: translateY(-4px); box-shadow:0 20px 38px rgba(0,0,0,0.18); }
+
+      /* decorative emojis that float around the card */
+      .emoji{ position:absolute; font-size:28px; opacity:0.98; pointer-events:none; user-select:none; animation: float 6s ease-in-out infinite; }
+      .emoji.emoji-1{ left: -6%; top: -6%; transform-origin:center; animation-duration:6s; }
+      .emoji.emoji-2{ right: -4%; top: -2%; animation-duration:7.2s; }
+      .emoji.emoji-3{ left: -6%; bottom: -6%; animation-duration:5.2s; }
+      .emoji.emoji-4{ right: -4%; bottom: -8%; animation-duration:8s; }
+      @keyframes float { 0%{ transform: translateY(0) rotate(0deg);} 50%{ transform: translateY(-12px) rotate(12deg);} 100%{ transform: translateY(0) rotate(0deg);} }
+
+      /* title entrance */
+      @keyframes entrance { 0%{ opacity:0; transform: translateY(12px) scale(0.98);} 100%{ opacity:1; transform: translateY(0) scale(1);} }
+
+      /* decorative bar */
+      .accentBar{ height:4px; width:50px; margin:10px auto 6px; background: linear-gradient(90deg, #fff3f5, var(--accent)); border-radius:8px; box-shadow:0 6px 18px rgba(255,92,168,0.08); }
+
+      #confettiCanvas{ position:fixed; left:0; top:0; width:100%; height:100%; pointer-events:none; z-index:9999; }
+
+      @media (max-width:520px){ .card{ padding:1rem; } .title{ font-size: clamp(26px, 10vw, 38px);} .emoji{ font-size:22px; } }
+    </style>
+  </head>
+  <body>
+    <div class="stage">
+      <div class="card" role="main">
+        <div class="emoji emoji-1" aria-hidden>🎈</div>
+        <div class="emoji emoji-2" aria-hidden>✨</div>
+        <div class="emoji emoji-3" aria-hidden>💖</div>
+        <div class="emoji emoji-4" aria-hidden>🎉</div>
+
+        <h1 class="title">happy birthday maiii love</h1>
+        <div class="accentBar" aria-hidden></div>
+        <p class="subtitle">i have a present for you.</p>
+        <div class="controls">
+          <a id="startBtn" class="btn" href="page2.html" role="button">Start</a>
+        </div>
+      </div>
+    </div>
+    <canvas id="confettiCanvas" aria-hidden="true"></canvas>
+    <script>
+      (function(){
+        const canvas = document.getElementById('confettiCanvas');
+        const ctx = canvas.getContext && canvas.getContext('2d');
+        function setSize(){ if(!ctx) return; canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', setSize); setSize();
+
+        const particles = [];
+        function rand(min,max){ return Math.random()*(max-min)+min; }
+        function Particle(x,y,dx,dy,size,color){ this.x=x;this.y=y;this.dx=dx;this.dy=dy;this.size=size;this.color=color; }
+        Particle.prototype.update = function(dt){ this.x += this.dx * dt; this.y += this.dy * dt; this.dy += 0.0015 * dt; }
+        Particle.prototype.draw = function(ctx){ ctx.fillStyle = this.color; ctx.fillRect(this.x, this.y, this.size, this.size); }
+        function createBurst(x,y,count){ const colors=['#FF5CA8','#FFB86B','#FFD166','#7AE7C7','#7EA9FF','#D28BFF']; for(let i=0;i<count;i++){ const angle=rand(0,Math.PI*2); const speed=rand(0.6,3.5); const dx=Math.cos(angle)*speed; const dy=Math.sin(angle)*speed*-1.2; const size=Math.floor(rand(6,14)); const color=colors[Math.floor(rand(0,colors.length))]; particles.push(new Particle(x + rand(-10,10), y + rand(-10,10), dx, dy, size, color)); }}
+        let last = performance.now(); let running=false;
+        function animate(now){ const dt=Math.min(50, now-last); last=now; if(!ctx) return; ctx.clearRect(0,0,canvas.width, canvas.height); for(let i=particles.length-1;i>=0;i--){ const p=particles[i]; p.update(dt); p.draw(ctx); if(p.y - p.size > canvas.height + 50 || p.x < -50 || p.x > canvas.width + 50) particles.splice(i,1); } if(particles.length>0) requestAnimationFrame(animate); else running=false; }
+
+        function triggerBurst(x,y,count){ createBurst(x,y,count); if(!running){ running=true; last=performance.now(); requestAnimationFrame(animate);} }
+
+        function centerX(){ return Math.floor(window.innerWidth / 2); }
+        function centerY(){ return Math.floor(window.innerHeight / 3); }
+
+        // Start button: confetti and redirect
+        const start = document.getElementById('startBtn');
+        start.addEventListener('click', function(e){ e.preventDefault(); triggerBurst(centerX(), centerY(), 80); setTimeout(()=>{ window.location.href = this.getAttribute('href') || 'page2.html'; }, 1200); });
+        start.addEventListener('keydown', function(e){ if(e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter'){ e.preventDefault(); this.click(); } });
+
+        // No Surprise button — only Start triggers confetti and navigation.
+      })();
+    </script>
+  </body>
+</html>
