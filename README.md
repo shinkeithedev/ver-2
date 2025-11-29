@@ -1,1 +1,91 @@
-# ver-2
+[yt letr1.html](https://github.com/user-attachments/files/23831786/yt.letr1.html)
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Love letter for crush</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap"
+      rel="stylesheet" />
+    <style>
+      :root{ --accent:#ff5ca8; --bg1:#ff9a9e; --bg2:#fecfef; }
+      html,body{ height:100%; margin:0; font-family:-apple-system,BlinkMacSystemFont, 'Segoe UI', Roboto, Arial; }
+      body{ display:flex; align-items:center; justify-content:center; background: linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 100%); }
+      .envlope-wrapper{ width:92%; max-width:780px; display:flex; align-items:center; justify-content:center; }
+      #envelope{ width:420px; height:260px; position:relative; perspective:900px; }
+      .front{ position:absolute; width:100%; height:100%; left:0; top:0; border-radius:12px; box-shadow:0 14px 40px rgba(0,0,0,0.12); overflow:hidden; }
+      .front.pocket{ background: linear-gradient(180deg,#fff,#ffeef8); transform: translateY(8px); }
+      .front.flap{ transform-origin: top; background: linear-gradient(180deg,#fff,#ffd0ea); height:72%; z-index:6; }
+      #envelope.open .front.flap{ transform: rotateX(180deg) translateY(-10%); transition: transform 700ms cubic-bezier(.2,.9,.2,1); }
+      #envelope .letter{ position:absolute; left:22px; right:22px; top:30px; bottom:22px; background:white; border-radius:8px; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; padding:18px; box-shadow: inset 0 1px 0 rgba(0,0,0,0.02); transform: translateY(0); transition: transform 700ms cubic-bezier(.2,.9,.2,1); }
+      #envelope.open .letter{ transform: translateY(-48px); opacity:1; }
+      #envelope.close .letter{ transform: translateY(12px); opacity:0; }
+      .words{ font-family:'Dancing Script', cursive; color:#3a2a69; font-size:20px; margin:4px 0; }
+      .hearts{ position:absolute; right:16px; top:10px; z-index:3; }
+      .heart{ width:18px; height:18px; background: #ff5ca8; transform: rotate(-45deg); border-radius:6px 6px 0 0; margin:6px 0; }
+      .reset{ display:flex; gap:10px; flex-direction:column; position:absolute; right:18px; top:18px; }
+      .reset button{ padding:8px 12px; border-radius:8px; border:0; background:var(--accent); color:#fff; font-weight:700; cursor:pointer; }
+      .reset a.btn{ display:inline-block; padding:8px 12px; border-radius:8px; text-decoration:none; color:#fff; }
+      .emoji{ position:absolute; font-size:26px; opacity:0.96; pointer-events:none; user-select:none; }
+      .emoji.one{ left:6%; top:6%; }
+      .emoji.two{ right:6%; top:8%; }
+      .emoji.three{ left:6%; bottom:8%; }
+      .emoji.four{ right:6%; bottom:6%; }
+      @media (max-width:520px){ #envelope{ width:92%; height: 220px; } .words{ font-size:18px; } .reset{ position:static; margin-top:14px; flex-direction:row; justify-content:center; gap:10px; } }
+    </style>
+  </head>
+  <body>
+    <!-- tiktok meowish -->
+    <div class="envlope-wrapper">
+      <div id="envelope" class="close">
+        <div class="front flap"></div>
+        <div class="front pocket"></div>
+        <div class="letter">
+          <div class="words line1">To: my love</div>
+          <div class="words line2">Dear my love, Happy birthday lov</div>
+          <div class="words line3">may you have more birthday to come</div>
+          <div class="words line4">i love you so much, and i miss you too<3</div>
+        </div>
+        <div class="hearts">
+          <div class="heart a1"></div>
+          <div class="heart a2"></div>
+          <div class="heart a3"></div>
+        </div>
+      </div>
+    </div>
+    <div class="reset">
+      <button id="open" aria-expanded="false" aria-controls="envelope">Open</button>
+      <button id="resetBtn">Close</button>
+      <a class="btn" href="web mark 1.html" style="background: #764ba2; text-decoration:none; padding:8px 12px; border-radius:8px; color:#fff;">Back to Page 1</a>
+      <a class="btn" href="page2.html" style="background:#ff5ca8; text-decoration:none; padding:8px 12px; border-radius:8px; color:#fff;">Back to Question</a>
+    </div>
+    <canvas id="confettiCanvas" aria-hidden="true" style="position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
+    <script>
+      (function(){
+        const env = document.getElementById('envelope');
+        const openBtn = document.getElementById('open');
+        const resetBtn = document.getElementById('resetBtn');
+        function toggle(open){ if(open){ env.classList.remove('close'); env.classList.add('open'); } else { env.classList.remove('open'); env.classList.add('close'); }}
+        openBtn.addEventListener('click', function(){ toggle(true); triggerBurst(window.innerWidth/2, window.innerHeight/3, 80); openBtn.setAttribute('aria-expanded', 'true'); });
+        resetBtn.addEventListener('click', function(){ toggle(false); openBtn.setAttribute('aria-expanded', 'false'); });
+        openBtn.addEventListener('keydown', function(e){ if(e.key==='Enter' || e.key === ' '){ e.preventDefault(); this.click(); }});
+        resetBtn.addEventListener('keydown', function(e){ if(e.key==='Enter' || e.key === ' '){ e.preventDefault(); this.click(); }});
+        const canvas = document.getElementById('confettiCanvas');
+        const ctx = canvas.getContext && canvas.getContext('2d'); if(!ctx) return;
+        function setSize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', setSize); setSize();
+        const particles = [];
+        function rand(min,max){ return Math.random()*(max-min)+min; }
+        function Particle(x,y,dx,dy,size,color){ this.x=x;this.y=y;this.dx=dx;this.dy=dy;this.size=size;this.color=color; }
+        Particle.prototype.update = function(dt){ this.x += this.dx * dt; this.y += this.dy * dt; this.dy += 0.0015 * dt; }
+        Particle.prototype.draw = function(ctx){ ctx.fillStyle = this.color; ctx.fillRect(this.x, this.y, this.size, this.size); }
+        function createBurst(x,y,count){ const colors=['#FF5CA8','#FFB86B','#FFD166','#7AE7C7','#7EA9FF','#D28BFF']; for(let i=0;i<count;i++){ const angle=rand(0,Math.PI*2); const speed=rand(0.6,3.5); const dx=Math.cos(angle)*speed; const dy=Math.sin(angle)*speed*-1.2; const size=Math.floor(rand(6,14)); const color=colors[Math.floor(rand(0,colors.length))]; particles.push(new Particle(x + rand(-10,10), y + rand(-10,10), dx, dy, size, color)); }}
+        let last = performance.now(); let running=false;
+        function animate(now){ const dt=Math.min(50, now-last); last=now; ctx.clearRect(0,0,canvas.width, canvas.height); for(let i=particles.length-1;i>=0;i--){ const p=particles[i]; p.update(dt); p.draw(ctx); if(p.y - p.size > canvas.height + 50 || p.x < -50 || p.x > canvas.width + 50) particles.splice(i,1); } if(particles.length>0) requestAnimationFrame(animate); else running=false; }
+        function triggerBurst(x,y,count){ createBurst(x,y,count); if(!running){ running=true; last=performance.now(); requestAnimationFrame(animate);} }
+      })();
+    </script>
+  </body>
+</html>
